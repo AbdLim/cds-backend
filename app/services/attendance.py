@@ -34,3 +34,38 @@ class AttendanceService:
             )
         )
         return {"attendance": attendance}
+
+    def get_corper_attendance(self, corper_id: str) -> list:
+        attendance_records = self.attendance_repository.get_attendance_by_corper(
+            corper_id=corper_id
+        )
+        if not attendance_records:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail="No attendance records found for this corper.",
+            )
+        return attendance_records
+
+    def get_group_attendance_by_date(self, cds_group: str, target_date: date) -> list:
+        attendance_records = self.attendance_repository.get_attendance_by_date(
+            cds_group=cds_group, target_date=target_date
+        )
+        if not attendance_records:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail="No attendance records found for this group on the specified date.",
+            )
+        return attendance_records
+
+    def mark_attendance_status(
+        self, attendance_id: str, status: str, remarks: str = None
+    ) -> dict:
+        updated_attendance = self.attendance_repository.update_attendance_status(
+            attendance_id=attendance_id, status=status, remarks=remarks
+        )
+        if not updated_attendance:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail="Attendance record not found.",
+            )
+        return {"attendance": updated_attendance}
