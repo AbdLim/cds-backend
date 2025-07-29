@@ -11,23 +11,13 @@ class AdminRepository(BaseRepository[User]):
     def __init__(self, session: Session):
         super().__init__(session, User)
 
-    def create_officer_account(
-        session: Session, user: User, officer_profile: OfficerProfile
-    ) -> User:
-        session.add(user)
-        session.flush()  # gets the user.id
+    def create_officer_account(self, officer_profile: OfficerProfile) -> OfficerProfile:
+        return self.create(officer_profile)
 
-        officer_profile.user_id = user.id
-        session.add(officer_profile)
-
-        session.commit()
-        session.refresh(user)
-        return user
-
-    def get_officer_by_id(session: Session, user_id: UUID) -> Optional[User]:
-        return session.exec(
+    def get_officer_by_id(self, user_id: UUID) -> Optional[User]:
+        return self.session.exec(
             select(User).where(User.id == user_id, User.role == "officer")
         ).first()
 
-    def get_all_officers(session: Session) -> list[User]:
-        return session.exec(select(User).where(User.role == "officer")).all()
+    def get_all_officers(self) -> list[User]:
+        return self.session.exec(select(User).where(User.role == "officer")).all()
