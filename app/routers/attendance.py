@@ -1,10 +1,11 @@
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends
 from locust import User
 from sqlmodel import Session
 
 from app.core.rbac import require_permission
 from app.db.session import get_session
 from app.dependencies.auth import get_current_user
+from app.services.attendance import AttendanceService
 
 
 router = APIRouter()
@@ -17,10 +18,8 @@ async def view_own_attendance(
     session: Session = Depends(get_session),
 ):
     """View own attendance."""
-    raise HTTPException(
-        status_code=status.HTTP_501_NOT_IMPLEMENTED,
-        detail="This endpoint is not implemented yet.",
-    )
+    attendance_service = AttendanceService(session)
+    return await attendance_service.get_attendance_by_corper(current_user.id)
 
 
 @router.get("/group")
@@ -30,9 +29,9 @@ async def view_assigned_group_attendance(
     session: Session = Depends(get_session),
 ):
     """View CDS group attendance."""
-    raise HTTPException(
-        status_code=status.HTTP_501_NOT_IMPLEMENTED,
-        detail="This endpoint is not implemented yet.",
+    attendance_service = AttendanceService(session)
+    return await attendance_service.get_attendance_by_date(
+        cds_group=current_user.cds_group, target_date=current_user.attendance_date
     )
 
 
@@ -43,9 +42,9 @@ async def view_all_attendance(
     session: Session = Depends(get_session),
 ):
     """View all attendance."""
-    raise HTTPException(
-        status_code=status.HTTP_501_NOT_IMPLEMENTED,
-        detail="This endpoint is not implemented yet.",
+    attendance_service = AttendanceService(session)
+    return await attendance_service.get_group_attendance_by_date(
+        cds_group=current_user.cds_group, target_date=current_user.attendance_date
     )
 
 
@@ -56,7 +55,9 @@ async def view_assigned_group_attendance(
     session: Session = Depends(get_session),
 ):
     """."""
-    raise HTTPException(
-        status_code=status.HTTP_501_NOT_IMPLEMENTED,
-        detail="This endpoint is not implemented yet.",
+    attendance_service = AttendanceService(session)
+    return await attendance_service.mark_attendance_status(
+        attendance_id=current_user.attendance_id,
+        status=current_user.status,
+        remarks=current_user.remarks,
     )
