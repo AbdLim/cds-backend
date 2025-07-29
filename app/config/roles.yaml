@@ -1,0 +1,160 @@
+# Role-based access control configuration
+# Each role can have multiple permissions
+# Permissions are defined below with metadata
+
+roles:
+  corper:
+    permissions:
+      - read:own_profile
+      - read:own_attendance
+      - create:excuse
+      - read:own_excuse
+      - generate:qr_code
+
+  general_secretary:
+    permissions:
+      - read:assigned_corpers
+      - mark:attendance
+      - capture:gps
+      - read:own_profile
+
+  officer:
+    permissions:
+      - read:assigned_corpers
+      - read:assigned_attendance
+      - mark:attendance
+      - capture:gps
+      - update:attendance_remark
+      - read:excuse
+      - update:excuse_status
+      - assign:general_secretary
+      - read:own_profile
+      - read:own_excuse
+
+  super_admin:
+    permissions:
+      - read:all_profiles
+      - create:officer
+      - update:user_status
+      - read:all_attendance
+      - read:all_excuse
+      - update:attendance_remark
+      - update:excuse_status
+      - audit:logs
+      - reset:password
+      - delete:user
+      - read:own_profile
+
+permissions:
+  # PROFILE PERMISSIONS
+  read:own_profile:
+    description: "Can view own user profile"
+    category: "profile"
+    scope: "own"
+
+  read:all_profiles:
+    description: "Can view all user profiles"
+    category: "profile"
+    scope: "all"
+
+  # ATTENDANCE PERMISSIONS
+  read:own_attendance:
+    description: "View own attendance records"
+    category: "attendance"
+    scope: "own"
+
+  read:assigned_attendance:
+    description: "View attendance records of assigned CDS group"
+    category: "attendance"
+    scope: "assigned"
+
+  read:all_attendance:
+    description: "Can view all attendance records in the system"
+    category: "attendance"
+    scope: "all"
+
+  mark:attendance:
+    description: "Mark attendance for corpers using QR"
+    category: "attendance"
+    scope: "assigned"
+
+  capture:gps:
+    description: "Capture GPS location when marking attendance"
+    category: "attendance"
+    scope: "assigned"
+
+  update:attendance_remark:
+    description: "Add or update remarks to attendance records"
+    category: "attendance"
+    scope: "assigned"
+
+  # QR CODE
+  generate:qr_code:
+    description: "Generate unique QR code for attendance"
+    category: "qr"
+    scope: "own"
+
+  # EXCUSE MANAGEMENT
+  create:excuse:
+    description: "Submit an excuse for CDS absence"
+    category: "excuse"
+    scope: "own"
+
+  read:own_excuse:
+    description: "View own excuse submission status"
+    category: "excuse"
+    scope: "own"
+
+  read:excuse:
+    description: "Read excuse requests for assigned CDS group"
+    category: "excuse"
+    scope: "assigned"
+
+  read:all_excuse:
+    description: "Read all excuse submissions in system"
+    category: "excuse"
+    scope: "all"
+
+  update:excuse_status:
+    description: "Approve or reject excuse submissions"
+    category: "excuse"
+    scope: "assigned"
+
+  # GENERAL SECRETARY ASSIGNMENT
+  assign:general_secretary:
+    description: "Assign or revoke General Secretary for a CDS group"
+    category: "user_management"
+    scope: "assigned"
+
+  # USER MANAGEMENT
+  update:user_status:
+    description: "Activate or deactivate any user"
+    category: "user_management"
+    scope: "all"
+
+  create:officer:
+    description: "Create officer or admin account"
+    category: "user_management"
+    scope: "all"
+
+  delete:user:
+    description: "Delete or archive a user"
+    category: "user_management"
+    scope: "all"
+
+  reset:password:
+    description: "Reset password for any user"
+    category: "user_management"
+    scope: "all"
+
+  # AUDIT
+  audit:logs:
+    description: "View audit logs and activity trails"
+    category: "audit"
+    scope: "all"
+
+  # CDS GROUP
+  read:assigned_corpers:
+    description: "Read corpers assigned to own CDS group"
+    category: "profile"
+    scope: "assigned"
