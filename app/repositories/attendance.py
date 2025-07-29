@@ -2,8 +2,7 @@ from datetime import date
 from typing import Optional, List
 from uuid import UUID
 
-from sqlmodel import Session, select, and_, or_
-from sqlalchemy import func
+from sqlmodel import Session, select
 
 
 from app.models.attendance import Attendance
